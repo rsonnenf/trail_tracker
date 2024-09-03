@@ -1,0 +1,190 @@
+<!-- Citation for the following code:
+-- Date: 02/14/2024
+-- Adapted from  
+-- Source bsg_HTML_UI/people.html downloaded from https://canvas.oregonstate.edu/courses/1946034/pages/exploration-web-application-technology?module_item_id=23809327-->
+
+<!--Citation for displaying data
+//      # Date: 3/9/2024
+//      # Adapted from assignment tutorial
+//      # Source URL: https://github.com/osu-cs340-ecampus/nodejs-starter-app/tree/main/Step%204%20-%20Dynamically%20Displaying%20Data
+
+<!-- Citation for adding data 
+//      # Date: 3/9/2024
+//      # Adapted from assignment tutorial
+//      # Source URL: https://github.com/osu-cs340-ecampus/nodejs-starter-app/tree/main/Step%205%20-%20Adding%20New%20Data-->
+
+<!-- //Citation for deleting data (Delete) 
+//      # Date: 3/9/2024
+//      # Adapted from assignment tutorial
+//      # Source URL: https://github.com/osu-cs340-ecampus/nodejs-starter-app/tree/main/Step%207%20-%20Dynamically%20Deleting%20Data -->
+
+<!-- //Citation for updating data (Updating)
+//      # Date: 3/9/2024
+//      # Adapted from assignment tutorial
+//      # Source URL: https://github.com/osu-cs340-ecampus/nodejs-starter-app/tree/main/Step%208%20-%20Dynamically%20Updating%20Data -->
+
+<html>
+<head>
+<title>Reports</title>
+<link href="styles.css" rel="stylesheet" type="text/css" />
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script language="JavaScript">
+		function showform(dowhat) {
+			/*
+			* four DIVS: browse, insert, update, delete
+			* this function sets one visible the others not
+			*/
+			if (dowhat == 'insert'){
+				document.getElementById('browse').style.display = 'none';
+				document.getElementById('insert').style.display = 'block';
+				document.getElementById('update').style.display = 'none';
+				document.getElementById('delete').style.display = 'none';
+			}
+			else if (dowhat == 'update'){
+				document.getElementById('browse').style.display = 'none';
+				document.getElementById('insert').style.display = 'none';
+				document.getElementById('update').style.display = 'block';
+				document.getElementById('delete').style.display = 'none';
+			}
+			else if (dowhat == 'delete'){
+				document.getElementById('browse').style.display = 'none';
+				document.getElementById('insert').style.display = 'none';
+				document.getElementById('update').style.display = 'none';
+				document.getElementById('delete').style.display = 'block';
+			}
+      else if (dowhat == 'all'){
+				document.getElementById('browse').style.display = 'block';
+				document.getElementById('insert').style.display = 'block';
+				document.getElementById('update').style.display = 'block';
+				document.getElementById('delete').style.display = 'block';
+			}
+			else { //by default display browse
+				document.getElementById('browse').style.display = 'block';
+				document.getElementById('insert').style.display = 'none';
+				document.getElementById('update').style.display = 'none';
+				document.getElementById('delete').style.display = 'none';
+			}
+		}
+    function newReport() { showform('insert'); }
+    function updateReport(pid) { showform('update'); }
+    //function deleteReport(reportID);// { showform ('delete'); }
+    function browseReport() { showform ('browse'); }
+    function showAll() { showform ('all'); }
+</script>
+
+</head>
+
+<body onload="browseReport()">
+<h1>Reports</h1>
+
+<nav>
+    <a href="trails.html">Trails</a> | <a href="reports.html">Reports</a> | <a href="users.html">Users</a> | <a href="comments.html">Comments</a> | <a href="trails_has_reports.html">Trails_has_Reports</a>
+</nav>
+<div id="browse">
+<p><a href="#" onClick="showAll()">Display all forms</a> </p>
+<table id="report-table">
+    <thead>
+
+        {{!-- For just the first row, we print each key of the row object as a header cell so we
+        know what each column means when the page renders --}}
+        <tr>
+          <th>Delete</th>
+            {{#each data.reports.[0]}}
+            <th>
+                {{@key}}
+            </th>
+            {{/each}}
+        </tr>
+    </thead>
+  {{#each data.reports}}
+  <tr data-value={{this.reportID}}>
+<!--    <td><a href="#" onClick="updateReport('{{this.reportID}}')">Edit</a></td> -->
+    <td><a href="#" onclick="deleteReport({{this.reportID}})">Delete</a></td>
+    <td>{{this.reportID}}</td>
+    <td>{{this.activity}}</td>
+    <td>{{this.title}}</td>
+    <td>{{this.distance}}</td>
+    <td>{{this.description}}</td>
+    <td>{{this.reportDate}}</td>
+    <td>{{this.userName}}</td>
+  </tr>
+  {{/each}}
+ 
+</table>
+<script src="./js/delete_report.js"></script>
+<p>&nbsp;</p>
+</div> <!-- browse -->
+<div id="insert">
+    <form method="POST" id="addReport" action="/add-report-form"> <!--enctype="multipart/form-data"-->
+        <legend><strong>Add Report</strong></legend>
+          <fieldset class="fields">
+          <label> Activity </label> <input type="text" name="activityInput" id="activityInput">
+          <label> Title </label> <input type="text" name="titleInput" id="titleInput">
+          <label> Distance </label> <input type="number" name="distanceInput" id="distanceInput">
+          <label> Description </label> <input type="text" name="descriptionInput" id="descriptionInput">
+          <label> Report Date </label> <input type="date" name="reportDateInput" id="reportDateInput">
+          <label> User ID </label>
+            <select name="userIDInput" id="UserIDInput">
+                <option value="">NULL</option> <!-- Null option -->
+                {{#each data.users}}
+                <option value="{{this.userID}}">{{this.userName}}</option>
+                {{/each}}
+              </select>
+          <label> Trails Traveled</label>
+            <select multiple name="trailsTraveled" id="trailsTraveled">
+              <!--<option value="test">Select any Trails traveled</option>-->
+              {{#each data.trails}}
+              <option value="{{this.trailID}}">{{this.trailName}}</option>
+              {{/each}}
+            </select>
+
+
+          <!--<label> Picture </label> <input type="file" name="pictureInput" id="pictureInput">-->          	
+      </fieldset>
+          <input class="btn" type="submit" value="Add Report">
+          <input class="btn" type="button" value="cancel" onClick="browseReport()">
+	</form>
+  <script src="./js/delete_report.js"></script> 
+</div><!-- insert -->
+<p>&nbsp;</p>
+<div id="update">
+    <form id="update-report-form-ajax">
+        <legend><strong>Update Report</strong></legend>
+          <fieldset class="fields">
+          <label for="reportNameInput">Report Name: </label>
+          <select name="reportNameInput" id="reportSelect">
+            <option value="test">Select a Report</option>
+            {{#each data.reports}}
+            <option value="{{this.reportID}}">{{this.reportID}}</option>
+            {{/each}}
+          </select>
+          <label> Title </label> <input type="text" name="titleInput" id="titleInputUpdate">
+          <label> Activity </label> <input type="text" name="activityInput" id="activityInputUpdate">
+          <label> Distance </label> <input type="number" name="distanceInput" id="distanceInputUpdate">
+          <label> Description </label> <input type="text" name="descriptionInput" id="descriptionInputUpdate">
+          <label> Report Date </label> <input type="date" name="reportDateInput" id="reportDateInputUpdate">
+          <label> User Name </label>
+            <select name="userIDInputUpdate" id="userIDInputUpdate">
+                <option value="">NULL</option> <!-- Null option -->
+                {{#each data.users}}
+                <option value="{{this.userName}}|{{this.userID}}">{{this.userName}}</option>
+                {{/each}}
+              </select>
+          <label> Trails Traveled</label>
+            <select multiple name="trailsTraveledInputUpdate" id="trailsTraveledInputUpdate">
+              <!--<option value="test">Select any Trails traveled</option>-->
+              {{#each data.trails}}
+              <option value="{{this.trailID}}">{{this.trailName}}</option>
+              {{/each}}
+            </select>
+          <!--<label> Picture </label> <input type="blob" name="pictureInput" id="pictureInput">-->
+      </fieldset>
+          <input class="btn" type="submit" id="UpdateSaveReport" value="Save Update Report">
+          <input class="btn" type="button" value="cancel" onClick="browseReport()">
+	</form> 
+</div><!-- update -->
+<script src="./js/update_report.js"></script>
+<p>&nbsp;</p>
+
+</body>
+</html>

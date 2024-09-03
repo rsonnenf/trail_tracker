@@ -1,0 +1,98 @@
+<!-- Citation for the following code:
+-- Date: 02/14/2024
+-- Adapted from  
+-- Source bsg_HTML_UI/comments.html downloaded from https://canvas.oregonstate.edu/courses/1946034/pages/exploration-web-application-technology?module_item_id=23809327-->
+
+<html>
+<head>
+<title>Comments</title>
+<link href="style.css" rel="stylesheet" type="text/css" />
+<script language="JavaScript">
+    function showForm(doWhat) {
+        /*
+        * three DIVS: browse, insert
+        * this function sets one visible the others not
+        */
+        if (doWhat == 'insert') {
+            document.getElementById('browse').style.display = 'none';
+            document.getElementById('insert').style.display = 'block';
+        } else { // by default display browse
+            document.getElementById('browse').style.display = 'block';
+            document.getElementById('insert').style.display = 'none';
+        }
+    }
+    function newComment() { showForm('insert'); }
+    function browseComments() { showForm('browse'); }
+</script>
+</head>
+
+<body onload="browseComments()">
+<h1>Comments</h1>
+
+<nav>
+    <a href="trails.html">Trails</a> | <a href="reports.html">Reports</a> | <a href="users.html">Users</a> | <a href="comments.html">Comments</a> | <a href="Trails_has_Reports.html">Trails_has_Reports</a>
+</nav>
+<div id="browse">
+<p><a href="#" onClick="newComment()">Add Comment</a> </p>
+<table>
+  <tr>
+    <th>Comment ID</th>
+    <th>Comment Text</th>
+    <th>Comment Date</th>
+    <th>Report ID</th>
+    <th>User ID</th>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>Thanks for the report.</td>
+    <td>2</td>
+    <td>2024-02-06</td>
+    <td>1</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td>I really like this trail.</td>
+    <td>3</td>
+    <td>2024-02-07</td>
+    <td>2</td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td>Very helpful.</td>
+    <td>1</td>
+    <td>2024-02-08</td>
+    <td>1</td>
+  </tr>
+  <!-- More comment entries can be added here -->
+</table>
+<p>&nbsp;</p>
+</div> <!-- browse -->
+
+<div id="insert">
+    <form method="POST" id="addComment">
+        <legend><strong>Add Comment</strong></legend>
+          <fieldset class="fields">
+            <label>Comment Text</label> <input type="text" name="comment_text">
+            <label>Report Title</label> <select name="title">
+                <option value="0">&nbsp;</option>
+                <option value="1">Forest Park Walk</option>
+                <option value="2">Forest Park Run</option>
+                <option value="3">Trillium Birding</option>
+            </select>
+            <label> User ID </label> <select name="user">
+                <option value="0">&nbsp;</option>
+                <option value="1">Sam Case</option>
+                <option value="2">Josh Jones</option>
+                <option value="3">Sarah Smith</option>
+                </select>
+            <label> Comment Date</label>
+            <input type="date" name="comment_date">
+      </fieldset>
+          <input class="btn" type="submit" id="addComment" value="Add Comment">
+          <input class="btn" type="button" value="Cancel" onClick="browseComments()">
+	</form> 
+</div><!-- insert -->
+<p>&nbsp;</p>
+
+</body>
+</html>

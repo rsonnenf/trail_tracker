@@ -1,0 +1,115 @@
+<!-- Citation for the following code:
+-- Date: 02/14/2024
+-- Adapted from  
+-- Source bsg_HTML_UI/people.html downloaded from https://canvas.oregonstate.edu/courses/1946034/pages/exploration-web-application-technology?module_item_id=23809327-->
+
+<!--Citation for displaying data
+//      # Date: 3/9/2024
+//      # Adapted from assignment tutorial
+//      # Source URL: https://github.com/osu-cs340-ecampus/nodejs-starter-app/tree/main/Step%204%20-%20Dynamically%20Displaying%20Data
+
+<!-- Citation for adding data 
+//      # Date: 3/9/2024
+//      # Adapted from assignment tutorial
+//      # Source URL: https://github.com/osu-cs340-ecampus/nodejs-starter-app/tree/main/Step%205%20-%20Adding%20New%20Data -->
+<html>
+<head>
+<title>Users</title>
+<link href="styles.css" rel="stylesheet" type="text/css" />
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script language="JavaScript">
+		function showform(dowhat) {
+			/*
+			* four DIVS: browse, insert, update, delete
+			* this function sets one visible the others not
+			*/
+			if (dowhat == 'insert'){
+				document.getElementById('browse').style.display = 'none';
+				document.getElementById('insert').style.display = 'block';
+				document.getElementById('update').style.display = 'none';
+				document.getElementById('delete').style.display = 'none';
+			}
+			else if (dowhat == 'update'){
+				document.getElementById('browse').style.display = 'none';
+				document.getElementById('insert').style.display = 'none';
+				document.getElementById('update').style.display = 'block';
+				document.getElementById('delete').style.display = 'none';
+			}
+			else if (dowhat == 'delete'){
+				document.getElementById('browse').style.display = 'none';
+				document.getElementById('insert').style.display = 'none';
+				document.getElementById('update').style.display = 'none';
+				document.getElementById('delete').style.display = 'block';
+			}
+      else if (dowhat == 'all'){
+				document.getElementById('browse').style.display = 'block';
+				document.getElementById('insert').style.display = 'block';
+				document.getElementById('update').style.display = 'block';
+				document.getElementById('delete').style.display = 'block';
+			}
+			else { //by default display browse
+				document.getElementById('browse').style.display = 'block';
+				document.getElementById('insert').style.display = 'none';
+				document.getElementById('update').style.display = 'none';
+				document.getElementById('delete').style.display = 'none';
+			}
+		}
+    function newUser() { showform('insert'); }
+    function updateUser(pid) { showform('update'); }
+    //function deleteUser(userID);// { showform ('delete'); }
+    function browseUser() { showform ('browse'); }
+    function showAll() { showform ('all'); }
+</script>
+
+</head>
+
+<body onload="browseUser()">
+<h1>Users</h1>
+
+<nav>
+    <a href="trails.html">Trails</a> | <a href="reports.html">Reports</a> | <a href="users.html">Users</a> | <a href="comments.html">Comments</a> | <a href="Trails_has_Reports.html">Trails_has_Reports</a>
+</nav>
+<div id="browse">
+<p><a href="#" onClick="showAll()">Display all forms</a> </p>
+<table id="user-table">
+    <thead>
+
+        {{!-- For just the first row, we print each key of the row object as a header cell so we
+        know what each column means when the page renders --}}
+        <tr>
+            {{#each data.[0]}}
+            <th>
+                {{@key}}
+            </th>
+            {{/each}}
+        </tr>
+    </thead>
+  {{#each data}}
+  <tr data-value={{this.userID}}>
+<!--    <td><a href="#" onClick="updateUser('{{this.userID}}')">Edit</a></td> -->
+    <td>{{this.userID}}</td>
+    <td>{{this.userName}}</td>
+    <td>{{this.age}}</td>
+  </tr>
+  {{/each}}
+ 
+</table>
+<p>&nbsp;</p>
+</div> <!-- browse -->
+<div id="insert">
+    <form method="POST" id="addUser" action="/add-user-form"> <!--enctype="multipart/form-data"-->
+        <legend><strong>Add User</strong></legend>
+          <fieldset class="fields">
+          <label> User Name </label> <input type="text" name="userNameInput" id="userNameInput">
+          <label> Age </label> <input type="number" name="ageInput" id="ageInput">
+          <!--<label> Picture </label> <input type="file" name="pictureInput" id="pictureInput">-->          	
+      </fieldset>
+          <input class="btn" type="submit" value="Add User">
+          <input class="btn" type="button" value="cancel" onClick="browseUser()">
+	</form> 
+</div><!-- insert -->
+<p>&nbsp;</p>
+
+
+</body>
+</html>

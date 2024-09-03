@@ -1,0 +1,171 @@
+<!-- Citation for the following code:
+-- Date: 02/14/2024
+-- Adapted from  
+-- Source bsg_HTML_UI/people.html downloaded from https://canvas.oregonstate.edu/courses/1946034/pages/exploration-web-application-technology?module_item_id=23809327-->
+
+<!--Citation for displaying data
+//      # Date: 3/9/2024
+//      # Adapted from assignment tutorial
+//      # Source URL: https://github.com/osu-cs340-ecampus/nodejs-starter-app/tree/main/Step%204%20-%20Dynamically%20Displaying%20Data
+
+<!-- Citation for adding data 
+//      # Date: 3/9/2024
+//      # Adapted from assignment tutorial
+//      # Source URL: https://github.com/osu-cs340-ecampus/nodejs-starter-app/tree/main/Step%205%20-%20Adding%20New%20Data -->
+
+<!-- //Citation for deleting data
+//      # Date: 3/9/2024
+//      # Adapted from assignment tutorial
+//      # Source URL: https://github.com/osu-cs340-ecampus/nodejs-starter-app/tree/main/Step%207%20-%20Dynamically%20Deleting%20Data -->
+
+<!-- //Citation for updating data 
+//      # Date: 3/9/2024
+//      # Adapted from assignment tutorial
+//      # Source URL: https://github.com/osu-cs340-ecampus/nodejs-starter-app/tree/main/Step%208%20-%20Dynamically%20Updating%20Data -->
+<html>
+<head>
+<title>Trails</title>
+<link href="styles.css" rel="stylesheet" type="text/css" />
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script language="JavaScript">
+		function showform(dowhat) {
+			/*
+			* four DIVS: browse, insert, update, delete
+			* this function sets one visible the others not
+			*/
+			if (dowhat == 'insert'){
+				document.getElementById('browse').style.display = 'none';
+				document.getElementById('insert').style.display = 'block';
+				document.getElementById('update').style.display = 'none';
+				document.getElementById('delete').style.display = 'none';
+			}
+			else if (dowhat == 'update'){
+				document.getElementById('browse').style.display = 'none';
+				document.getElementById('insert').style.display = 'none';
+				document.getElementById('update').style.display = 'block';
+				document.getElementById('delete').style.display = 'none';
+			}
+			else if (dowhat == 'delete'){
+				document.getElementById('browse').style.display = 'none';
+				document.getElementById('insert').style.display = 'none';
+				document.getElementById('update').style.display = 'none';
+				document.getElementById('delete').style.display = 'block';
+			}
+      else if (dowhat == 'all'){
+				document.getElementById('browse').style.display = 'block';
+				document.getElementById('insert').style.display = 'block';
+				document.getElementById('update').style.display = 'block';
+				document.getElementById('delete').style.display = 'block';
+			}
+			else { //by default display browse
+				document.getElementById('browse').style.display = 'block';
+				document.getElementById('insert').style.display = 'none';
+				document.getElementById('update').style.display = 'none';
+				document.getElementById('delete').style.display = 'none';
+			}
+		}
+    function newTrail() { showform('insert'); }
+    function updateTrail(pid) { showform('update'); }
+    //function deleteTrail(trailID);// { showform ('delete'); }
+    function browseTrail() { showform ('browse'); }
+    function showAll() { showform ('all'); }
+</script>
+
+</head>
+
+<body onload="browseTrail()">
+<h1>Trails</h1>
+
+<nav>
+    <a href="trails.html">Trails</a> | <a href="reports.html">Reports</a> | <a href="users.html">Users</a> | <a href="comments.html">Comments</a> | <a href="trails_has_reports.html">Trails_has_Reports</a>
+</nav>
+<div id="browse">
+<p><a href="#" onClick="showAll()">Display all forms</a> </p>
+<table id="trail-table">
+    <thead>
+
+        {{!-- For just the first row, we print each key of the row object as a header cell so we
+        know what each column means when the page renders --}}
+        <tr>
+          <th>Delete</th>
+            {{#each data.[0]}}
+            <th>
+                {{@key}}
+            </th>
+            {{/each}}
+        </tr>
+    </thead>
+  {{#each data}}
+  <tr data-value={{this.trailID}}>
+<!--    <td><a href="#" onClick="updateTrail('{{this.trailID}}')">Edit</a></td> -->
+    <td><a href="#" onclick="deleteTrail({{this.trailID}})">Delete</a></td>
+    <td>{{this.trailID}}</td>
+    <td>{{this.trailName}}</td>
+    <td>{{this.region}}</td>
+    <td>{{this.length}}</td>
+    <td>{{this.elevationGain}}</td>
+    <td>{{this.description}}</td>
+  </tr>
+  {{/each}}
+ 
+</table>
+<script src="./js/delete_trail.js"></script>
+<p>&nbsp;</p>
+</div> <!-- browse -->
+<div id="insert">
+    <form method="POST" id="addTrail" action="/add-trail-form"> <!--enctype="multipart/form-data"-->
+        <legend><strong>Add Trail</strong></legend>
+          <fieldset class="fields">
+          <label> Trail Name </label> <input type="text" name="trailNameInput" id="trailNameInput">
+          <label> Region </label> <input type="text" name="regionInput" id="regionInput">
+          <label> Length </label> <input type="number" name="lengthInput" id="lengthInput">
+          <label> Elevation Gain </label> <input type="number" name="elevationInput" id="elevationInput">
+          <label> Description </label> <input type="text" name="descriptionInput" id="descriptionInput">
+          <!--<label> Picture </label> <input type="file" name="pictureInput" id="pictureInput">-->          	
+      </fieldset>
+          <input class="btn" type="submit" value="Add Trail">
+          <input class="btn" type="button" value="cancel" onClick="browseTrail()">
+	</form> 
+</div><!-- insert -->
+<p>&nbsp;</p>
+<div id="update">
+    <form id="update-trail-form-ajax">
+        <legend><strong>Update Trail</strong></legend>
+          <fieldset class="fields">
+          <label for="trailNameInput">Trail Name: </label>
+          <select name="trailNameInput" id="trailSelect">
+            <option value="test">Select a Trail</option>
+            {{#each data}}
+            <option value="{{this.trailID}}">{{this.trailName}}</option>
+            {{/each}}
+          </select>
+          <label> Region </label> <input type="text" name="regionInput" id="regionInputUpdate">
+          <label> Length </label> <input type="number" name="lengthInput" id="lengthInputUpdate">
+          <label> Elevation Gain </label> <input type="number" name="elevationInput" id="elevationInputUpdate">
+          <label> Description </label> <input type="text" name="descriptionInput" id="descriptionInputUpdate">
+          <!--<label> Picture </label> <input type="blob" name="pictureInput" id="pictureInput">-->
+      </fieldset>
+          <input class="btn" type="submit" id="UpdateSaveTrail" value="Save Update Trail">
+          <input class="btn" type="button" value="cancel" onClick="browseTrail()">
+	</form> 
+</div><!-- update -->
+<script src="./js/update_trail.js"></script>
+<p>&nbsp;</p>
+{{!<div id="delete" style="display: block">
+  <form method="POST" id="deleteTrail" action="/delete-trail-ajax">
+      <legend><strong>Delete Trail</strong></legend>
+          <fieldset class="fields">
+          <p>Are you sure you wish to delete the following?</p>
+          <input type="hidden" name="trailID" id="deletetrailID" value="1">
+          <label><strong>trailID:</strong></label> 1
+            <label> <strong>Trail</strong> </label> Leif Ericson
+            
+    </fieldset>
+    <input class="btn" type="submit" id="DeleteTrail" value="Delete Trail">
+          <input class="btn" type="button" value="cancel" onClick="browseTrail()">
+  </form> 
+</div><!-- delete -->}}
+
+
+</body>
+</html>
